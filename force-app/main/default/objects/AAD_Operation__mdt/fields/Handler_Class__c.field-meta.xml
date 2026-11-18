@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata"><fullName>Handler_Class__c</fullName><description>Top-level Apex class implementing AADHandler, without a namespace.</description><fieldManageability>SubscriberControlled</fieldManageability><label>Handler Class</label><length>255</length><required>true</required><type>Text</type></CustomField>
