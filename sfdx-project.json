@@ -3,10 +3,14 @@
     {
       "path": "force-app",
       "default": true
+    },
+    {
+      "path": "examples",
+      "default": false
     }
   ],
-  "name": "sf-dx-empty-project",
+  "name": "apex-async-dispatcher",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "68.0"
+  "sourceApiVersion": "64.0"
 }

@@ -4,14 +4,14 @@ Implement `AADHandler` in a public top-level class. Use a no-argument constructo
 
 ```apex
 public with sharing class MyAccountAsyncHandler implements AADHandler {
-    public void validate(AADRequest request) {
-        // Check payloadVersion, JSON structure, IDs, and required parameters.
-        // No DML, SOQL-dependent business decisions, callouts, or enqueueing.
-    }
+  public void validate(AADRequest request) {
+    // Check payloadVersion, JSON structure, IDs, and required parameters.
+    // No DML, SOQL-dependent business decisions, callouts, or enqueueing.
+  }
 
-    public void execute(AADRequest request, AADExecutionContext context) {
-        // Read current records, enforce access, and perform bulk work here.
-    }
+  public void execute(AADRequest request, AADExecutionContext context) {
+    // Read current records, enforce access, and perform bulk work here.
+  }
 }
 ```
 

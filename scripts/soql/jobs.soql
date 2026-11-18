@@ -1,0 +1,5 @@
+SELECT Id, Status, NumberOfErrors, ExtendedStatus, CreatedDate
+FROM AsyncApexJob
+WHERE ApexClass.Name = 'AADQueueable'
+ORDER BY CreatedDate DESC
+LIMIT 20

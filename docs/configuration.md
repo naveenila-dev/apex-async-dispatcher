@@ -2,14 +2,14 @@
 
 Custom Metadata Type: **`AAD_Operation__mdt`**, label **Async Operation**.
 
-| Field | Metadata type | Meaning |
-| --- | --- | --- |
-| `DeveloperName` | Standard metadata record name | Stable operation key used by callers |
-| `MasterLabel` | Standard label | Human-readable operation label |
-| `Handler_Class__c` | Required Text(255) | Top-level class name, without namespace or inner-class qualification |
-| `Handler_Namespace__c` | Optional Text(40) | Namespace supplied to `Type.forName(namespace, name)`; blank means no namespace |
-| `Enabled__c` | Checkbox, default false | Allows new submissions |
-| `Delay_Minutes__c` | Required Number(2,0), default 0 | Minimum delay, 0–10 minutes |
+| Field                  | Metadata type                   | Meaning                                                                         |
+| ---------------------- | ------------------------------- | ------------------------------------------------------------------------------- |
+| `DeveloperName`        | Standard metadata record name   | Stable operation key used by callers                                            |
+| `MasterLabel`          | Standard label                  | Human-readable operation label                                                  |
+| `Handler_Class__c`     | Required Text(255)              | Top-level class name, without namespace or inner-class qualification            |
+| `Handler_Namespace__c` | Optional Text(40)               | Namespace supplied to `Type.forName(namespace, name)`; blank means no namespace |
+| `Enabled__c`           | Checkbox, default false         | Allows new submissions                                                          |
+| `Delay_Minutes__c`     | Required Number(2,0), default 0 | Minimum delay, 0–10 minutes                                                     |
 
 `AAD_Valid_Delay` enforces the delay range declaratively. Apex checks the range and integrality before converting the value to an Integer. All four custom fields use subscriber-controlled manageability to support configuration by the installing org.
 

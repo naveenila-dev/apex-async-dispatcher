@@ -1,58 +1,107 @@
-# Salesforce DX Project
+# Apex Async Dispatcher
 
-Salesforce DX is a development approach that brings source-driven development, team collaboration, and continuous integration to the Salesforce Platform. Instead of working directly in an org through a web browser, you work with metadata as source files in a local DX project, track changes in version control, and deploy through automated processes.
+A lightweight, Custom Metadata-driven framework for dispatching Salesforce Queueable jobs to interchangeable Apex handlers.
 
-This project template gets you started with the tools and structure you need to build Salesforce applications using source control, scratch orgs, and the Salesforce CLI.
+GitHub repository: **`apex-async-dispatcher`**. Initial source version: **0.1.0**. Minimum supported Apex API version: **64.0**.
 
-## Prerequisites
+## Install the core
 
-Before you start, make sure you have:
+Run commands from this directory, with Salesforce CLI installed and an explicitly selected development org authenticated:
 
-- **Salesforce CLI** - Download from [developer.salesforce.com/tools/salesforcecli](https://developer.salesforce.com/tools/salesforcecli). See [Install Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm) for details.
-- **VS Code with Salesforce Extension Pack** - See [Installation Instructions](https://developer.salesforce.com/docs/platform/sfvscode-extensions/guide/install.html) for details. Includes the Agentforce Vibes extension.
-- **A development org** - Sign up for a free Developer Edition org [here](https://developer.salesforce.com/signup).
-- **Dev Hub enabled** (optional, required to create scratch orgs) - You can enable Dev Hub in your development org under Setup > Dev Hub.  See [Provide Developers Access to Salesforce DX Tools](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_setup_dx_tools.htm).
+```sh
+sf project deploy start --source-dir force-app --target-org YOUR_DEV_ORG --test-level RunLocalTests --wait 20
+```
 
-## Project Structure
+Run all commands from the repository root. Core and examples have separate source directories; deploy each explicitly.
 
-Your DX project follows this structure:
+Core installation creates no operation registrations. In Setup, open **Custom Metadata Types → Async Operation → Manage Records → New** and register your handler:
 
-- **`force-app/main/default/`** - Your metadata source files live in this default package directory. You can configure additional package directories in the `sfdx-project.json` file.
-- **`config/`** - Scratch org definitions and project settings
-- **`scripts/`** - Automation scripts for common tasks
-- **`sfdx-project.json`** - Project manifest that defines package directories, namespace, API version, and other project-level settings
+| Setting                                | Example                               |
+| -------------------------------------- | ------------------------------------- |
+| Label                                  | Process Accounts                      |
+| Async Operation Name (`DeveloperName`) | `PROCESS_ACCOUNTS`                    |
+| Handler Class                          | `MyAccountAsyncHandler`               |
+| Handler Namespace                      | Leave blank for an unpackaged handler |
+| Enabled                                | Checked                               |
+| Delay Minutes                          | `0`                                   |
 
-See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm).
+The handler must be a public top-level class implementing `AADHandler` and have a usable no-argument constructor. Implementations and their constructors must follow the [handler contract](docs/handler-development.md).
 
-## Get Started
+## Submit work
 
-Ready to start developing? The [Get Started with Salesforce DX](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_get_started_dx.htm) guide walks you through your first project, from creating a scratch org to creating a simple Apex class or LWC to deploying your code to a sandbox.
+```apex
+AADRequest request = new AADRequest();
+request.operationKey = 'EXAMPLE_ACCOUNT_UPDATE';
+request.recordIds = new List<Id>{ accountId };
+request.payloadVersion = 1;
+request.payloadJson = JSON.serialize(new Map<String, Object>{
+    'description' => 'Processed asynchronously'
+});
+request.correlationId = 'account-import-123';
 
-## Common Salesforce CLI Commands
+Id jobId = AADDispatcher.submit(request);
+```
 
-Here are common CLI commands that you'll use the most:
+`submit()` returns an `AsyncApexJob` ID or throws. Invalid requests are rejected before enqueueing. Submission is part of the caller's transaction: rolling back that transaction also rolls back the enqueue.
 
-- `sf org login web`: Authorize an org
-- `sf org open`: Open your org in a browser
-- `sf org create scratch`: Create a scratch org
-- `sf project deploy start`: Deploy metadata to your org
-- `sf project retrieve start`: Retrieve metadata from your org
-- `sf template generate <artifact>`: Scaffold new components, such as Apex classes and triggers, LWC components, Lightning apps, and more
-- `sf apex <command>`: Run Apex tests, run anonymous Apex blocks, and view logs
-- `sf data <command>`: Work with test data
-- `sf alias <command>`: Manage org aliases
-- `sf config <command>`: Configure CLI settings
+Handler selection and delay configuration are captured at submission. Changes to registration records affect subsequent submissions. A delay is a minimum wait from 0–10 minutes, not an execution-time guarantee.
 
-## Use Agentforce Vibes to Build Lightning Apps
+## Try the examples
 
-Transform your ideas into custom Lightning apps that extend CRM workflows directly in Lightning Experience. Through natural conversations with Agentforce Vibes, implement custom objects and fields, complex business logic, and dynamic UI components. See [Build a Lightning App Using Agentforce Vibes](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/lexapp-overview.html).
+Deploy examples separately, **in a development org**, after installing the core:
 
-## Additional Resources
+```sh
+sf project deploy start --source-dir examples --target-org YOUR_DEV_ORG --test-level RunLocalTests --wait 20
+```
 
-- [Agentforce Vibes Developer Guide](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/einstein-overview.html)
-- [Salesforce CLI Installation Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/)
-- [Salesforce CLI Plugin Development Guide](https://developer.salesforce.com/docs/platform/salesforce-cli-plugin/guide/conceptual-overview.html)
-- [Salesforce VS Code Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
+This installs two enabled example registrations:
 
+| Operation key            | Handler                    | Behaviour                                                                                      |
+| ------------------------ | -------------------------- | ---------------------------------------------------------------------------------------------- |
+| `EXAMPLE_ACCOUNT_UPDATE` | `AADExampleAccountHandler` | Overwrites `Account.Description` for 1–200 unique Account IDs using user-mode, all-or-none DML |
+| `EXAMPLE_HTTP_CALLOUT`   | `AADExampleCalloutHandler` | POSTs a JSON `message` to `callout:AAD_Example_API/events`; fails on non-2xx responses         |
+
+For the Account example, use the submission code above with `EXAMPLE_ACCOUNT_UPDATE` as the key and actual Account IDs. For the HTTP example, supply `{"message":"Hello"}` as `payloadJson` and configure a Named Credential named **`AAD_Example_API`** for your own API. Configure its External Credential and principal access as required. The project includes no endpoint or authentication secrets. Tests use `HttpCalloutMock` and require no live credential.
+
+## Validate
+
+Offline checks:
+
+```sh
+python3 scripts/validate_source.py
+sf project convert source --root-dir force-app --output-dir /tmp/aad-core-mdapi --api-version 64.0
+sf project convert source --root-dir examples --output-dir /tmp/aad-examples-mdapi --api-version 64.0
+```
+
+After deploying to a clean development org, execute the tests and collect coverage:
+
+```sh
+sf apex run test --target-org YOUR_DEV_ORG --test-level RunLocalTests --code-coverage --result-format human --wait 20
+```
+
+Offline checks validate source structure and metadata conversion. Salesforce compilation and Apex test execution require an authenticated org; offline checks do not replace them.
+
+## Project components
+
+| Name                   | Responsibility                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `AADDispatcher`        | Validates and submits work; returns the job ID                                                    |
+| `AADRequest`           | Serializable envelope with operation key, IDs, JSON payload, version, and optional correlation ID |
+| `AADHandler`           | `validate()` and `execute()` extension contract                                                   |
+| `AADExecutionContext`  | Job ID, operation key, and correlation ID                                                         |
+| `AADOperationConfig`   | Captured handler and delay configuration                                                          |
+| `AADOperationRegistry` | Reads and validates `AAD_Operation__mdt` registrations                                            |
+| `AADHandlerFactory`    | Resolves handler types and checks the interface                                                   |
+| `AADQueueable`         | Executes the registered handler with callout support                                              |
+| `AADException`         | Framework validation/configuration exception                                                      |
+| `AAD_Operation__mdt`   | Operation registrations; no business payloads or job state                                        |
+
+See [architecture](docs/architecture.md), [configuration](docs/configuration.md), [security](docs/security.md), [migration](docs/migration.md), and [contribution and CI instructions](CONTRIBUTING.md).
+
+This version provides one transaction per request. It does not provide automatic retries, durable pending work, a job-history object, or an execution SLA. Bulk processing remains the handler's responsibility. Native job monitoring is available through Apex Jobs and `AsyncApexJob`.
+
+## Development and release
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local tooling and clean scratch-org CI setup, and [CHANGELOG.md](CHANGELOG.md) for changes. Source installation is supported for 0.1.0; an unlocked package is deferred until the public contract stabilises.
+
+Queueable delay and user-mode data access follow the [Salesforce Queueable guide](https://developer.salesforce.com/docs/platform/apex-dev/references/apex-dev/apex-queueing-jobs.html) and [access-control guidance](https://developer.salesforce.com/docs/platform/secure-coding/guide/secure-coding-access-control-protect-from-crud-fls-vulnerabilities.html).

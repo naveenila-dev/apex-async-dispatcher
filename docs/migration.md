@@ -1,6 +1,6 @@
 # Migrating GenericQueueableHandler
 
-The surrounding application's `GenericQueueableHandler` remains unchanged. Install this core in the application org before migrating callers. From the parent repository, an explicit deployment path is `packages/apex-async-dispatcher/force-app`; its default root `force-app` deployment does not include the library.
+The surrounding application's `GenericQueueableHandler` remains unchanged. Install the core from this repository using `sf project deploy start --source-dir force-app --target-org YOUR_DEV_ORG` before migrating callers.
 
 Migrate one operation at a time:
 
@@ -12,24 +12,7 @@ Migrate one operation at a time:
 6. Verify actual service effects and native job status before migrating the next operation.
 7. Remove the old dispatcher only after all its callers and interface dependencies are migrated.
 
-Suggested adapter names, kept in the application rather than the open-source core:
-
-| Existing operation | Suggested application handler |
-| --- | --- |
-| `PDF_BLOCK` | `ConsumerPdfAsyncHandler` |
-| `OPP_QUOTE_GROUP_LOAN_RST` | `OpportunityRequoteAsyncHandler` |
-| `PERFORM_ASSET_BACKED_CHECK` | `AssetBackedCheckAsyncHandler` |
-| `CapitalisedInsuranceAmount` | `InsuranceCapitalisationAsyncHandler` |
-| `OPP_CHANGE_IN_PURPOSE_OF_USE` | `OpportunityPurposeAsyncHandler` |
-| `CREATE_PCA_PDF` | `PcaPdfAsyncHandler` |
-| `CREATE_INSURANCE_SUITABILITY_ASSESSMENT_PDF` | `InsuranceAssessmentPdfAsyncHandler` |
-| `OPEN_AI` | `OpenAiAsyncHandler` |
-| `VERIFY_DL` | `DrivingLicenseAsyncHandler` |
-| `POST_TO_GOOGLE_WORKSPACE` | `GoogleWorkspaceAsyncHandler` |
-| `INSURANCE_QUOTE` | `InsuranceQuoteAsyncHandler` |
-| `HARMONEY_FETCH_APPLICATION_STATUS` | `HarmoneyStatusAsyncHandler` |
-
-These adapters are proposed names, not components supplied by this project. Preserve current operation keys during migration where possible. `CREATE_INSURANCE_SUITABILITY_ASSESSMENT_PDF` exceeds the metadata record name limit of 40 characters; register it as `CREATE_INSURANCE_ASSESSMENT_PDF` and update that caller explicitly.
+For example, an application-specific `InsuranceQuoteAsyncHandler` can delegate to an existing `InsuranceAPI.sendInsuranceRequest()` service. Such adapters belong in the application repository. Preserve existing operation keys when they fit Salesforce metadata record naming constraints; explicitly update callers when a key must change.
 
 Replace wrapper-specific fields such as `oppIds`, `openAiData`, and `csWrpr` with `recordIds` and operation-specific JSON. Do not add dependencies on application wrapper types to the core.
 
@@ -37,4 +20,4 @@ Replace wrapper-specific fields such as `oppIds`, `openAiData`, and `csWrpr` wit
 
 Move delays from individual requests into operation metadata. If you need request-specific delay overrides later, introduce a documented options contract rather than quietly changing the metadata policy.
 
-Fix swallowed exceptions in migrated handlers. For the requote operation's temporary static flag, restore its prior value in a `finally` block. For flows and service loops, define bulk limits and failure semantics rather than copying the old dispatcher wholesale.
+Fix swallowed exceptions in migrated handlers. Restore any temporary static flags to their prior values in a `finally` block. For flows and service loops, define bulk limits and failure semantics rather than copying the old dispatcher wholesale.
