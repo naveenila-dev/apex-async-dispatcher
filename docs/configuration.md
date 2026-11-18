@@ -21,4 +21,4 @@ Metadata changes affect future submissions. To stop existing work, use Salesforc
 
 Use metadata for operation configuration only. Credentials, payloads, execution status, retry counters, and logs do not belong in this type.
 
-The core includes the **Async Operation Layout** for Setup configuration. Example registrations are installed only when the separate `examples` directory is deployed.
+Example registrations are installed only when the separate `examples` directory is deployed.

@@ -36,8 +36,6 @@ def validate():
                 errors.append(f'{path.name}: missing class metadata')
     required = [
         'README.md', 'LICENSE', 'CONTRIBUTING.md', 'CHANGELOG.md',
-        '.github/workflows/validate.yml',
-        'force-app/main/default/layouts/AAD_Operation__mdt-Async Operation Layout.layout-meta.xml',
     ]
     for name in ['AADDispatcher', 'AADRequest', 'AADHandler', 'AADExecutionContext',
                  'AADOperationConfig', 'AADOperationRegistry', 'AADHandlerFactory',

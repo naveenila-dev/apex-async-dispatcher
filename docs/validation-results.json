@@ -1,0 +1,240 @@
+{
+  "date": "2026-11-18",
+  "timezone": "Australia/Melbourne",
+  "targetOrgAlias": "valueMapper",
+  "deploymentApiVersion": "64.0",
+  "deployments": [
+    {
+      "sourceDirectory": "force-app",
+      "deploymentId": "0AfQy00000ed58rKAA",
+      "status": "Succeeded",
+      "testLevel": "RunSpecifiedTests",
+      "testsRun": 14,
+      "testFailures": 0,
+      "coverage": [
+        {
+          "class": "AADHandlerFactory",
+          "executableLines": 25,
+          "uncoveredLines": 0
+        },
+        {
+          "class": "AADRequest",
+          "executableLines": 19,
+          "uncoveredLines": 0
+        },
+        {
+          "class": "AADDispatcher",
+          "executableLines": 16,
+          "uncoveredLines": 0
+        },
+        {
+          "class": "AADExecutionContext",
+          "executableLines": 4,
+          "uncoveredLines": 0
+        },
+        {
+          "class": "AADException",
+          "executableLines": 0,
+          "uncoveredLines": 0
+        },
+        {
+          "class": "AADOperationConfig",
+          "executableLines": 23,
+          "uncoveredLines": 0
+        },
+        {
+          "class": "AADQueueable",
+          "executableLines": 16,
+          "uncoveredLines": 0
+        },
+        {
+          "class": "AADOperationRegistry",
+          "executableLines": 32,
+          "uncoveredLines": 0
+        }
+      ],
+      "tests": [
+        {
+          "class": "AADDispatcherTest",
+          "method": "rejectsBadRequestsWithoutEnqueueing"
+        },
+        {
+          "class": "AADDispatcherTest",
+          "method": "rejectsSubmissionWhenTransactionCapacityIsExhausted"
+        },
+        {
+          "class": "AADDispatcherTest",
+          "method": "submitsAndExecutesCalloutWithContext"
+        },
+        {
+          "class": "AADHandlerFactoryTest",
+          "method": "instantiatesRegisteredHandler"
+        },
+        {
+          "class": "AADHandlerFactoryTest",
+          "method": "rejectsUnusableTypes"
+        },
+        {
+          "class": "AADOperationRegistryTest",
+          "method": "defaultProviderReturnsNoRecordForUnknownKey"
+        },
+        {
+          "class": "AADOperationRegistryTest",
+          "method": "rejectsMissingDisabledAndMalformedRegistrations"
+        },
+        {
+          "class": "AADOperationRegistryTest",
+          "method": "resolvesEnabledOperationAndSnapshotsConfiguration"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "propagatesHandlerFailuresAndRevalidatesPayload"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "propagatesUnexpectedHandlerExceptions"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "requiresConstructorInputs"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "snapshotsInputsAndPropagatesExecutionContext"
+        },
+        {
+          "class": "AADRequestTest",
+          "method": "acceptsOptionalFieldsAndCopiesCollections"
+        },
+        {
+          "class": "AADRequestTest",
+          "method": "rejectsInvalidEnvelopes"
+        }
+      ]
+    },
+    {
+      "sourceDirectory": "examples",
+      "deploymentId": "0AfQy00000ed5K9KAI",
+      "status": "Succeeded",
+      "testLevel": "RunSpecifiedTests",
+      "testsRun": 22,
+      "testFailures": 0,
+      "coverage": [
+        {
+          "class": "AADExampleCalloutHandler",
+          "executableLines": 37,
+          "uncoveredLines": 1
+        },
+        {
+          "class": "AADExampleAccountHandler",
+          "executableLines": 43,
+          "uncoveredLines": 3
+        }
+      ],
+      "tests": [
+        {
+          "class": "AADDispatcherTest",
+          "method": "rejectsBadRequestsWithoutEnqueueing"
+        },
+        {
+          "class": "AADDispatcherTest",
+          "method": "rejectsSubmissionWhenTransactionCapacityIsExhausted"
+        },
+        {
+          "class": "AADDispatcherTest",
+          "method": "submitsAndExecutesCalloutWithContext"
+        },
+        {
+          "class": "AADExampleAccountHandlerTest",
+          "method": "dispatchesThroughRealMetadataAndUpdatesAccounts"
+        },
+        {
+          "class": "AADExampleAccountHandlerTest",
+          "method": "rejectsInvalidIdsAndPayloadsWithoutEnqueueing"
+        },
+        {
+          "class": "AADExampleAccountHandlerTest",
+          "method": "rollsBackAllUpdatesWhenOneRecordIsMissing"
+        },
+        {
+          "class": "AADExampleCalloutHandlerTest",
+          "method": "acceptsSuccessStatusBoundaries"
+        },
+        {
+          "class": "AADExampleCalloutHandlerTest",
+          "method": "dispatchesThroughRealMetadataWithMockedHttp"
+        },
+        {
+          "class": "AADExampleCalloutHandlerTest",
+          "method": "propagatesHttpFailuresWithoutResponseBodies"
+        },
+        {
+          "class": "AADExampleCalloutHandlerTest",
+          "method": "propagatesTransportFailure"
+        },
+        {
+          "class": "AADExampleCalloutHandlerTest",
+          "method": "rejectsInvalidPayloadsBeforeSubmission"
+        },
+        {
+          "class": "AADHandlerFactoryTest",
+          "method": "instantiatesRegisteredHandler"
+        },
+        {
+          "class": "AADHandlerFactoryTest",
+          "method": "rejectsUnusableTypes"
+        },
+        {
+          "class": "AADOperationRegistryTest",
+          "method": "defaultProviderReturnsNoRecordForUnknownKey"
+        },
+        {
+          "class": "AADOperationRegistryTest",
+          "method": "rejectsMissingDisabledAndMalformedRegistrations"
+        },
+        {
+          "class": "AADOperationRegistryTest",
+          "method": "resolvesEnabledOperationAndSnapshotsConfiguration"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "propagatesHandlerFailuresAndRevalidatesPayload"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "propagatesUnexpectedHandlerExceptions"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "requiresConstructorInputs"
+        },
+        {
+          "class": "AADQueueableTest",
+          "method": "snapshotsInputsAndPropagatesExecutionContext"
+        },
+        {
+          "class": "AADRequestTest",
+          "method": "acceptsOptionalFieldsAndCopiesCollections"
+        },
+        {
+          "class": "AADRequestTest",
+          "method": "rejectsInvalidEnvelopes"
+        }
+      ]
+    }
+  ],
+  "liveExecution": {
+    "operationKey": "EXAMPLE_ACCOUNT_UPDATE",
+    "jobId": "707Qy00001eQwSKIA0",
+    "status": "Completed",
+    "numberOfErrors": 0,
+    "descriptionBefore": "Before dispatch",
+    "descriptionAfter": "Verified asynchronous update",
+    "temporaryAccountDeleted": true
+  },
+  "limitations": [
+    "Existing developer org, not a newly created clean scratch org.",
+    "HTTP calls verified with HttpCalloutMock; no live endpoint or Named Credential was exercised.",
+    "Specified project tests ran; unrelated org tests were not run."
+  ]
+}

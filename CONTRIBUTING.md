@@ -27,10 +27,8 @@ Salesforce documents that `System.enqueueJob` can return null in test context ([
 
 Deploy core first to verify it has no example dependency. Example tests use deployed Custom Metadata records and HTTP mocks; they do not require a live Named Credential. Account example tests create their own data and verify user-mode, all-or-none updates. Apex tests and compilation must pass before a release; offline checks alone cannot establish release readiness.
 
-## GitHub Actions
+## Automation
 
-Every push and pull request runs offline checks, formatting, and Salesforce metadata conversion. Enable Apex integration CI by setting repository variable `AAD_RUN_APEX_TESTS` to `true` and repository secret `SF_DEV_HUB_AUTH_URL` to a Dev Hub SFDX authorization URL. Treat this URL as a credential. The Hub must support scratch org creation and have available allocation.
-
-The Apex job runs only on pushes and manual dispatches, creates a clean one-day scratch org, deploys/tests core independently, deploys/tests examples, uploads results, and deletes the org even after failures. Pull requests do not receive Dev Hub credentials. If Apex CI is disabled, its skipped status is not evidence that Apex tests passed.
+This repository currently has no GitHub Actions workflow. Run the local and Salesforce verification commands above before releasing. If CI is added later, deploy and test core independently before deploying examples, and keep org credentials out of pull requests from untrusted branches.
 
 Keep core business-independent, preserve the public request/handler contract, include meaningful failure tests, and document behavior changes in `CHANGELOG.md`. Do not add retries or durable queues without defining idempotency and transaction behavior first.
